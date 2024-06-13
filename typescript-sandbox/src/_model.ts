@@ -1,0 +1,1 @@
+// Definiciones de datos y estructuras que hacen falta para almacenar el estado de la partida

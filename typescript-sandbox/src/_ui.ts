@@ -1,7 +1,6 @@
 // Aqui va la lógica de presentación (interfaz de usuario).
 
 //-----------------------//
-// motor.ts <===== ui.ts //
 // model.ts <===== ui.ts //
 //-----------------------//
 
@@ -14,44 +13,6 @@ export const scoreDisplay = () : void => {
         score.innerHTML = points.totalPoints.toString();
     }
 }
-
-/* Listado de las cartas de juego */
-export const cardList = (card : number) => {
-    let cardUrl = "";
-    switch (card) {
-        case 1:
-            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/1_as-copas.jpg";
-            break;
-        case 2:
-            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/2_dos-copas.jpg";
-            break;
-        case 3:
-            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/3_tres-copas.jpg";
-            break;
-        case 4:
-            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/4_cuatro-copas.jpg";
-            break;
-        case 5:
-            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/5_cinco-copas.jpg";
-            break;
-        case 6:
-            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/6_seis-copas.jpg";
-            break;
-        case 7:
-            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/7_siete-copas.jpg";
-            break;
-        case 10:
-            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/10_sota-copas.jpg";
-            break;
-        case 11:
-            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/11_caballo-copas.jpg";
-            break;
-        case 12:
-            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/12_rey-copas.jpg";
-            break;
-}
-    return cardUrl;
-};
 
 /* Genera la carta con su clase. NO la pinta aun */
 export const createCard = (cardUrl : string) : HTMLImageElement => {
@@ -135,21 +96,19 @@ export const setGiveUpStatus = (gameStatus : string) : void => {
     }
 }
 
-/* Habilita el botón de "Una más" en el panel emergente tras plantarse */
-const oneMoreTimeButton = () : void => {
-    const oneMore = document.getElementById("one-more");
-    if (oneMore instanceof HTMLButtonElement
-        && oneMore !== null && oneMore !== undefined){
-        oneMore.addEventListener("click", getOneMoreTime); // Habilita el botón de generar una carta más en el panel emergente de plantarse
-    }
-}
-
 /* Actualiza el heading element del html con la puntuación */
 export const updateScore = (totalPoints : string) : void => {
     if (score instanceof HTMLHeadingElement
         && score !== undefined && score !== null) {
         score.innerHTML = totalPoints.toString();
     }
+}
+
+/* Inicia el proceso de plantar la partida */
+export const giveUp = () : void => {
+    const gameStatus : string = getGiveUpStatus() // Obtengo el mensaje de estado de la partida en base a los puntos
+    setGiveUpStatus(gameStatus); // Abro panel emergente mostrando el mensaje de estado de la partida
+    giveCardButtonOff();
 }
 
 /* Recarga la página */

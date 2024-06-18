@@ -1,9 +1,5 @@
 import "./style.css";
-import { score, giveCardBtn, giveUpBtn, restartGameBtn } from "./_model";
-import { scoreDisplay, restartGame, giveUp } from "./_ui";
-import { playGame } from "./_motor";
-
-
+import { score, giveCardBtn, giveUpBtn, restartGameBtn, playGame, scoreDisplay, restartGame, giveUp} from "./_ui";
 
 
 // ASIGNACIÓN DE FUNCIONES A LOS ELEMENTOS

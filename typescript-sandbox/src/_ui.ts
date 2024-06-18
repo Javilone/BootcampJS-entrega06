@@ -2,11 +2,58 @@
 
 //-----------------------//
 // model.ts <===== ui.ts //
+// motor.ts <===== ui.ts //
 //-----------------------//
 
-import { score, points, giveUpBtn, giveCardBtn } from "./_model";
+import { points } from "./_model";
+import { getRandomNumber, getCard, getCardValue, sumPoints, setPoints } from "./_motor";
 
-/* Muestra la puntuación del jugador */
+
+// ELEMENTOS DEL DOM
+export const score = document.getElementById("score");
+export const giveCardBtn = document.getElementById("play-btn");
+export const giveUpBtn = document.getElementById("give-up-btn");
+export const restartGameBtn = document.getElementById("restart-btn");
+
+// Listado de las cartas de juego
+export const cardList = (card : number) => {
+    let cardUrl = "";
+    switch (card) {
+        case 1:
+            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/1_as-copas.jpg";
+            break;
+        case 2:
+            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/2_dos-copas.jpg";
+            break;
+        case 3:
+            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/3_tres-copas.jpg";
+            break;
+        case 4:
+            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/4_cuatro-copas.jpg";
+            break;
+        case 5:
+            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/5_cinco-copas.jpg";
+            break;
+        case 6:
+            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/6_seis-copas.jpg";
+            break;
+        case 7:
+            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/7_siete-copas.jpg";
+            break;
+        case 10:
+            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/10_sota-copas.jpg";
+            break;
+        case 11:
+            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/11_caballo-copas.jpg";
+            break;
+        case 12:
+            cardUrl = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/12_rey-copas.jpg";
+            break;
+}
+    return cardUrl;
+};
+
+// Muestra la puntuación del jugador
 export const scoreDisplay = () : void => {
     if (score instanceof HTMLHeadingElement
         && score !== null && score !== undefined) {
@@ -14,7 +61,15 @@ export const scoreDisplay = () : void => {
     }
 }
 
-/* Genera la carta con su clase. NO la pinta aun */
+// Actualiza el heading element del html con la puntuación
+export const updateScore = (totalPoints : string) : void => {
+    if (score instanceof HTMLHeadingElement
+        && score !== undefined && score !== null) {
+        score.innerHTML = totalPoints.toString();
+    }
+}
+
+// Genera la carta con su clase. NO la pinta aun
 export const createCard = (cardUrl : string) : HTMLImageElement => {
     const playedCard = document.createElement("img");
     if (playedCard instanceof HTMLImageElement 
@@ -25,7 +80,7 @@ export const createCard = (cardUrl : string) : HTMLImageElement => {
     return playedCard
 }
 
-/* Pinta la carta en el contenedor padre */
+// Pinta la carta en el contenedor padre
 export const drawCard = (playedCard: HTMLImageElement): void => {
     const gameBoard = document.getElementById("played-board");
     if (gameBoard instanceof HTMLDivElement
@@ -34,7 +89,7 @@ export const drawCard = (playedCard: HTMLImageElement): void => {
     }
 }
 
-/* Determina el mensaje de estado de la partida según la puntuación */
+// Determina el mensaje de estado de la partida según la puntuación
 export const gameStatus = () : string => {
     let statusMessage: string = "";
     
@@ -52,7 +107,33 @@ export const gameStatus = () : string => {
     return statusMessage;
 }
 
-/* Deshabilita el botón de Pedir Carta */
+// Recarga la página
+export const restartGame = () : void => {
+    location.reload();
+}
+
+// Habilita el botón de "Una más" en el panel emergente tras plantarse
+export const oneMoreTimeButton = () : void => {
+    const oneMore = document.getElementById("one-more");
+    if (oneMore instanceof HTMLButtonElement
+        && oneMore !== null && oneMore !== undefined){
+        oneMore.addEventListener("click", getOneMoreTime); // Habilita el botón de generar una carta más en el panel emergente de plantarse
+    }
+}
+
+// Arranca el proceso de jugar una carta más
+export const getOneMoreTime = () : void => {
+    const randomNumber : number = getRandomNumber();
+    const card : number = getCard(randomNumber);
+    const cardUrl: string = cardList(card);
+    const cardValue : number = getCardValue(card)
+    const playedCard : HTMLImageElement = createCard(cardUrl);
+    drawCard(playedCard);
+    let gameStatus = `Pues que habrías sacado un ${cardValue}.<br>Y en total tendrías ${points.totalPoints + cardValue} puntos`;
+    setGiveUpStatus(gameStatus);
+}
+
+// Deshabilita el botón de Pedir Carta
 export const giveCardButtonOff = () : void => {
     if (giveCardBtn instanceof HTMLButtonElement
         && giveCardBtn !== null && giveCardBtn !== undefined) {
@@ -61,7 +142,7 @@ export const giveCardButtonOff = () : void => {
     }  
 }
 
-/* Deshabilita el botón de Plantarse */
+// Deshabilita el botón de Plantarse
 const giveUpButtonOff = () : void => {
     if (giveUpBtn instanceof HTMLButtonElement
         && giveUpBtn !== null && giveUpBtn !== undefined) {
@@ -70,7 +151,18 @@ const giveUpButtonOff = () : void => {
     }
 }
 
-/* Evalúa el mensaje de estado de la partida al momento de plantarse */
+// Establece el mensaje de estado tras plantarse
+export const setGiveUpStatus = (gameStatus : string) : void => {
+    const giveUpPanel = document.getElementById("give-up-panel");
+    if (giveUpPanel instanceof HTMLDivElement
+        && giveUpPanel !== null && giveUpPanel !== undefined) {
+        giveUpPanel.className = "give-up-panel-on";
+        giveUpPanel.innerHTML = gameStatus;
+        oneMoreTimeButton();
+    }
+}
+
+// Evalúa el mensaje de estado de la partida al momento de plantarse
 export const getGiveUpStatus = () : string => {
     giveUpButtonOff();
     if(points.totalPoints <= 4) {
@@ -85,33 +177,25 @@ export const getGiveUpStatus = () : string => {
     return points.totalPoints.toString();
 }
 
-/* Establece el mensaje de estado tras plantarse */
-export const setGiveUpStatus = (gameStatus : string) : void => {
-    const giveUpPanel = document.getElementById("give-up-panel");
-    if (giveUpPanel instanceof HTMLDivElement
-        && giveUpPanel !== null && giveUpPanel !== undefined) {
-        giveUpPanel.className = "give-up-panel-on";
-        giveUpPanel.innerHTML = gameStatus;
-        oneMoreTimeButton();
-    }
-}
-
-/* Actualiza el heading element del html con la puntuación */
-export const updateScore = (totalPoints : string) : void => {
-    if (score instanceof HTMLHeadingElement
-        && score !== undefined && score !== null) {
-        score.innerHTML = totalPoints.toString();
-    }
-}
-
-/* Inicia el proceso de plantar la partida */
+// Inicia el proceso de plantar la partida
 export const giveUp = () : void => {
     const gameStatus : string = getGiveUpStatus() // Obtengo el mensaje de estado de la partida en base a los puntos
     setGiveUpStatus(gameStatus); // Abro panel emergente mostrando el mensaje de estado de la partida
     giveCardButtonOff();
 }
 
-/* Recarga la página */
-export const restartGame = () : void => {
-    location.reload();
+// Arranca el juego
+export const playGame = () : void => {
+    const randomNumber : number = getRandomNumber(); // Obtengo un número aleatorio
+    const card : number = getCard(randomNumber); // Obtengo el número de la carta según el número aleatorio (no su valor) 
+    const cardUrl : string  = cardList(card); // Busco la url de la carta
+    const playedCard : HTMLImageElement = createCard(cardUrl); // Creo la carta pero no la pinto aun
+    drawCard(playedCard); // Pinto la carta en el contenedor padre
+
+    const cardValue : number = getCardValue(card); // Obtengo el valor en puntos de la carta
+    const sumScore: number = sumPoints(cardValue); // Obtengo la suma de los puntos totales + lo que vale la carta
+    setPoints(sumScore); // Establezco los puntos totales
+
+    const statusMessage : string = gameStatus(); // Verifico el estado del juego obteniendo un mensaje de victoria, gameover o los puntos
+    updateScore(statusMessage); // Actualizo la puntuación
 }
